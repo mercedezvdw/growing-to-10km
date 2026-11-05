@@ -1,0 +1,608 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Growing to 10KM</title>
+<meta name="theme-color" content="#ff3d9a">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="10KM">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&display=swap">
+<style>
+/* Layout: roze/paars dashboard met neon lime accenten. Strikje + serif kop, tegels, challenge, run club in eigen kleuren, schema met kleurpillen per run */
+:root{
+  --bg:#fbf3fb; --card:#ffffff; --ink:#2d0f3d; --muted:#7d5a8c; --line:#efd9f0;
+  --accent:#ff3d9a; --purple:#7c3aed; --soft:#fde4f1; --on-accent:#ffffff;
+  --lime:#c6ff1a; --lime-ink:#2d0f3d; --tile-purple:#6d28d9; --tile-pink:#d1086c;
+  --sheray:#ff3d9a; --dyea:#7c3aed; --mercedez:#a3dc00;
+  --sheray-ink:#ffffff; --dyea-ink:#ffffff; --mercedez-ink:#22300a;
+  --serif:"Instrument Serif","Didot","Bodoni 72",Georgia,serif;
+  --body:"DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#170a20; --card:#22102f; --ink:#f7eaff; --muted:#c3a3d6; --line:#3d2350;
+  --accent:#ff5aac; --purple:#a78bfa; --soft:#3a1638; --on-accent:#22071a;
+  --lime:#c6ff1a; --lime-ink:#1a0a24; --tile-purple:#6d28d9; --tile-pink:#d1086c;
+  --sheray:#ff5aac; --dyea:#a78bfa; --mercedez:#c6ff1a;
+  --sheray-ink:#22071a; --dyea-ink:#160a2e; --mercedez-ink:#1a2400; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#170a20; --card:#22102f; --ink:#f7eaff; --muted:#c3a3d6; --line:#3d2350;
+  --accent:#ff5aac; --purple:#a78bfa; --soft:#3a1638; --on-accent:#22071a;
+  --lime:#c6ff1a; --lime-ink:#1a0a24; --tile-purple:#6d28d9; --tile-pink:#d1086c;
+  --sheray:#ff5aac; --dyea:#a78bfa; --mercedez:#c6ff1a;
+  --sheray-ink:#22071a; --dyea-ink:#160a2e; --mercedez-ink:#1a2400; color-scheme:dark}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.55}
+.wrap{max-width:880px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:30px 60px;display:grid;gap:30px}
+h1,h2,.serif{font-family:var(--serif);font-weight:400;margin:0;line-height:1;text-wrap:balance;letter-spacing:-.01em}
+h1{font-size:clamp(54px,13vw,96px)}
+h2{font-size:clamp(32px,6vw,40px)}
+em{font-style:italic;color:var(--purple)}
+h1 em{color:var(--accent);background:linear-gradient(transparent 62%,var(--lime) 62%,var(--lime) 90%,transparent 90%);padding:0 .08em}
+.label{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+p{margin:0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px}
+section{display:grid;gap:14px}
+
+/* kop */
+.head{display:grid;gap:10px;justify-items:start}
+.bow{width:58px;height:auto;color:var(--accent)}
+.names{font-family:var(--serif);font-style:italic;font-size:22px;color:var(--muted)}
+.head p{color:var(--muted);max-width:60ch}
+
+/* tegels */
+.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.tile{padding:14px 16px;display:grid;gap:4px}
+.tile .v{font-family:var(--serif);font-size:44px;line-height:1;font-variant-numeric:tabular-nums}
+.tile .label{font-size:12px;color:var(--ink)}
+.tile .sub{font-size:14px;font-weight:500;color:var(--ink)}
+.tile.hot{background:var(--tile-pink);border-color:var(--tile-pink);color:#ffffff}
+.tile.hot .label,.tile.hot .sub{color:#ffffff}
+.tile.pink{background:var(--tile-purple);border-color:var(--tile-purple);color:#ffffff}
+.tile.pink .label,.tile.pink .sub{color:#ffffff}
+@media (max-width:680px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* challenge */
+.chal{border-radius:24px;padding:22px;display:grid;gap:14px;background:var(--soft);border:1px solid var(--line)}
+.chal .serif{font-size:clamp(26px,5vw,34px);line-height:1.1}
+
+/* pillen per persoon */
+.pills{display:flex;gap:6px;flex-wrap:wrap}
+.pill{--c:var(--accent);display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 12px 0 6px;border-radius:999px;border:1.5px solid var(--c);background:transparent;color:var(--ink);font:inherit;font-size:13px;font-weight:500;white-space:nowrap}
+.pill .d{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--c);display:grid;place-items:center;font-size:11px;line-height:1;color:transparent}
+.pill.on{background:var(--c);color:var(--ci)}
+.pill.on .d{background:var(--ci);border-color:var(--ci);color:var(--c)}
+.pill.mine{cursor:pointer;box-shadow:0 0 0 3px var(--soft)}
+.pill.mine:hover{transform:translateY(-1px)}
+.pill:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.pill.other{opacity:.9}
+.pill.other:not(.on){opacity:.45}
+@media (max-width:350px){.pill .n{display:none}.pill{padding:0 6px}}
+
+/* run club */
+.crew{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:680px){.crew{grid-template-columns:1fr}}
+.mate{--c:var(--accent);padding:16px;display:grid;grid-template-columns:76px minmax(0,1fr);gap:14px;align-items:center;border-top:5px solid var(--c)}
+.mate.me{box-shadow:0 0 0 2px var(--c),0 14px 30px -18px var(--c)}
+/* wie ben jij */
+.pick{padding:20px;display:grid;gap:12px;border:2px solid var(--purple)}
+.pick .serif{font-size:30px}
+.pick .row{display:flex;gap:10px;flex-wrap:wrap}
+.pick button{--c:var(--accent);font:inherit;font-weight:700;font-size:16px;padding:12px 22px;border-radius:999px;border:0;background:var(--c);color:var(--ci);cursor:pointer}
+.pick button:focus-visible,.swap:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.swap{font:inherit;font-size:13px;background:none;border:0;color:var(--purple);text-decoration:underline;cursor:pointer;padding:0}
+.ring{width:76px;height:76px;position:relative}
+.ring svg{width:76px;height:76px;transform:rotate(-90deg)}
+.ring b{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--serif);font-weight:400;font-size:30px;color:var(--ink)}
+.crown{position:absolute;top:-12px;left:50%;transform:translateX(-50%);font-size:18px}
+.mname{font-family:var(--serif);font-size:26px;line-height:1}
+.mname small{font-family:var(--body);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:var(--c);color:var(--ci);border-radius:999px;padding:2px 8px;margin-left:6px;vertical-align:5px}
+.mpts{font-size:13px;color:var(--muted);margin-top:4px}
+.wbar{display:flex;gap:4px;margin-top:8px}
+.wbar i{flex:1;height:6px;border-radius:3px;background:var(--line)}
+.wbar i.on{background:var(--c)}
+.hint{font-size:13px;color:var(--muted)}
+
+/* fases */
+.phases{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.phase{padding:14px}
+.phase .serif{font-size:26px;font-style:italic;color:var(--accent);margin-top:2px}
+.phase p{font-size:13px;color:var(--muted);margin-top:4px}
+@media (max-width:680px){.phases{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* weken */
+.weeks{display:grid;gap:10px}
+details.week{background:var(--card);border:1px solid var(--line);border-radius:18px}
+details.week.now{border:2px solid var(--purple)}
+summary{list-style:none;cursor:pointer;padding:12px 14px;display:grid;grid-template-columns:50px minmax(0,1fr) auto;gap:12px;align-items:center}
+summary::-webkit-details-marker{display:none}
+summary:focus-visible{outline:2px solid var(--ink);outline-offset:2px;border-radius:18px}
+.wk{width:50px;height:50px;border-radius:50%;background:var(--soft);display:grid;place-items:center;font-family:var(--serif);font-size:26px;color:var(--accent)}
+.now .wk{background:var(--lime);color:var(--lime-ink)}
+.wtitle{font-weight:700}
+.wtitle em{font-family:var(--serif);font-size:18px;font-weight:400}
+.wsub{font-size:13px;color:var(--muted)}
+.mini{display:flex;gap:4px}
+.mini i{width:8px;height:22px;border-radius:4px;background:var(--line);position:relative;overflow:hidden}
+.mini i b{position:absolute;inset:auto 0 0 0;background:var(--c)}
+.sessions{display:grid;gap:8px;padding:0 14px 14px}
+.s{display:grid;grid-template-columns:86px minmax(0,1fr);gap:6px 12px;align-items:start;padding:12px;border-radius:14px;background:var(--bg)}
+.s.ch{background:var(--soft)}
+.s .k{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding-top:3px}
+.s.ch .k{color:var(--accent)}
+.s .t{font-weight:500;margin-bottom:8px}
+@media (max-width:480px){.s{grid-template-columns:1fr}}
+
+.tips{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.tips div{padding:14px}
+.tips b{display:block;font-family:var(--serif);font-weight:400;font-style:italic;font-size:22px;color:var(--accent)}
+@media (max-width:620px){.tips{grid-template-columns:1fr}}
+.status{font-size:13px;color:var(--muted)}
+
+.mate.pickable{font:inherit;color:var(--ink);text-align:left;cursor:pointer}
+.mate.pickable:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);max-width:calc(100% - 32px);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:999px;font-weight:500;font-size:14px;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:60;text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.modebar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;padding:2px 2px 4px}
+.modebar .label{margin-right:4px}
+.mopt{font:inherit;font-size:13px;font-weight:500;padding:6px 12px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+.mopt.on{background:var(--purple);border-color:var(--purple);color:#fff}
+.mopt:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.persona{border:1.5px dashed var(--c);border-radius:16px;padding:12px;display:grid;gap:8px}
+.persona .ph{font-size:14px}
+.persona .ph b{font-family:var(--serif);font-weight:400;font-size:22px}
+.pnote{font-size:13px;color:var(--muted)}
+.persona .s{background:var(--card)}
+.mmode{font-size:12px;color:var(--muted);margin-top:4px}
+.prow{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.tbtn{font:inherit;font-size:13px;font-weight:700;padding:6px 12px;border-radius:999px;border:0;background:var(--ink);color:var(--bg);cursor:pointer;white-space:nowrap}
+.tbtn:focus-visible{outline:2px solid var(--purple);outline-offset:2px}
+.tov{--tb:var(--lime);--tf:var(--lime-ink);position:fixed;inset:0;z-index:100;background:var(--tb);color:var(--tf);display:flex;justify-content:center;
+  padding-top:max(16px,env(safe-area-inset-top,0px));padding-bottom:max(16px,env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));transition:background .3s}
+.tov[data-type="walk"]{--tb:#ff3d9a;--tf:#ffffff}
+.tov[data-type="fast"]{--tb:#6d28d9;--tf:#ffffff}
+.tov[data-type="done"]{--tb:#2d0f3d;--tf:#ffffff}
+.tin{width:100%;max-width:520px;display:grid;grid-template-rows:auto auto 1fr auto auto auto auto;gap:14px}
+.tsnd{display:flex;gap:8px;flex-wrap:wrap}
+.tsb{font:inherit;font-size:13px;font-weight:700;padding:7px 12px;border-radius:999px;border:1.5px solid var(--tf);background:transparent;color:var(--tf);cursor:pointer}
+.tsb:focus-visible{outline:3px solid var(--tf);outline-offset:2px}
+.ttop{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.tttl{font-size:14px;font-weight:500;opacity:.85}
+.tx{font:inherit;font-size:20px;background:none;border:0;color:inherit;cursor:pointer;padding:4px 8px}
+.tmain{display:grid;align-content:center;justify-items:center;text-align:center;gap:6px}
+.tphase{font-family:var(--serif);font-size:clamp(40px,11vw,64px);line-height:1}
+.tround{font-size:15px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;min-height:1.2em}
+.tclock{font-family:var(--body);font-weight:700;font-size:clamp(84px,26vw,150px);line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.03em}
+.tnext{font-size:16px;opacity:.9}
+.tbar{height:8px;border-radius:4px;background:color-mix(in srgb,var(--tf) 22%,transparent);overflow:hidden}
+.tbar i{display:block;height:100%;background:var(--tf);transition:width .25s linear}
+.ttotal{font-size:14px;text-align:center;opacity:.9}
+.tctl{display:grid;grid-template-columns:1fr 1.4fr;gap:10px}
+.tb{font:inherit;font-size:18px;font-weight:700;padding:16px;border-radius:999px;border:2px solid var(--tf);background:transparent;color:var(--tf);cursor:pointer}
+.tmainbtn{background:var(--tf);color:var(--tb)}
+.tskip[hidden]+.tmainbtn{grid-column:1/-1}
+.tb:focus-visible,.tx:focus-visible{outline:3px solid var(--tf);outline-offset:3px}
+.thint{font-size:12px;text-align:center;opacity:.75;margin:0}
+@media (prefers-reduced-motion:reduce){.tov,.tbar i{transition:none}}
+/* hartjes bij afvinken */
+.heart{position:fixed;pointer-events:none;font-size:16px;z-index:50;animation:pop .9s ease-out forwards}
+@keyframes pop{from{opacity:1;transform:translate(0,0) scale(.6)}to{opacity:0;transform:translate(var(--dx),var(--dy)) scale(1.2)}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}.heart{display:none}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="head">
+    <svg class="bow" viewBox="0 0 120 70" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><path d="M60 32 C45 10,18 4,12 18 C6 32,30 42,60 34"/><path d="M60 32 C75 10,102 4,108 18 C114 32,90 42,60 34"/><path d="M57 36 L44 64"/><path d="M63 36 L76 64"/></g><circle cx="60" cy="34" r="7" fill="currentColor"/></svg>
+    <span class="names" id="names">Sheray, Dyea &amp; Mercedez</span>
+    <h1>Growing <em>to 10KM</em></h1>
+    <span class="label">Glowing &amp; Growing · 15 mei 2027</span>
+    <p>Zaterdag 15 mei lopen we onze eerste 10 km. We starten maandag 9 november en lopen drie keer per week. Vink je runs af, doe de challenge en zie in jouw kleur hoe je ervoor staat. Sheray is roze, Dyea paars en Mercedez neon.</p>
+  </header>
+
+  <section class="pick card" id="pick" hidden aria-labelledby="pickTitle">
+    <p class="serif" id="pickTitle">Wie <em>ben jij?</em></p>
+    <p class="hint">Welkom bij The Girls Run Club! Kies één keer je naam. Je telefoon onthoudt het en daarna vink je alleen je eigen runs af.</p>
+    <div class="row" id="pickRow"></div>
+  </section>
+
+  <section class="tiles" aria-label="Overzicht">
+    <div class="tile card pink"><span class="label">Nog</span><span class="v" id="tDays">–</span><span class="sub">dagen tot de finish</span></div>
+    <div class="tile card"><span class="label">Week</span><span class="v" id="tWeek">–</span><span class="sub" id="tPhase">van 27</span></div>
+    <div class="tile card hot"><span class="label">Deze week</span><span class="v" id="tRuns">0/9</span><span class="sub">runs samen gedaan</span></div>
+    <div class="tile card"><span class="label">Samen</span><span class="v" id="tPts">0</span><span class="sub">punten</span></div>
+  </section>
+
+  <section class="chal" aria-labelledby="chTitle">
+    <span class="label" id="chLabel">Challenge van de week</span>
+    <p class="serif" id="chTitle">–</p>
+    <div class="pills" id="chPills"></div>
+  </section>
+
+  <section aria-labelledby="crewTitle">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap"><h2 id="crewTitle">The Girls <em>Run Club</em></h2><span class="hint" id="meHint"></span></div>
+    <div class="crew" id="crew"></div>
+  </section>
+
+  <section aria-labelledby="pTitle">
+    <h2 id="pTitle">Zo bouwen we <em>op</em></h2>
+    <div class="phases">
+      <div class="phase card"><span class="label">Wk 1–9</span><div class="serif">Basis</div><p>Wandelen en rennen afwisselen tot je 25 min doorloopt.</p></div>
+      <div class="phase card"><span class="label">Wk 10–17</span><div class="serif">Opbouw</div><p>Doorlopen. Lange run groeit naar 7 km.</p></div>
+      <div class="phase card"><span class="label">Wk 18–24</span><div class="serif">Afstand</div><p>Lange run groeit naar 11 km.</p></div>
+      <div class="phase card"><span class="label">Wk 25–27</span><div class="serif">Taper</div><p>Minder lopen, frisse benen voor 15 mei.</p></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="sTitle">
+    <h2 id="sTitle">Het <em>schema</em></h2>
+    <p class="hint">Weken starten op maandag. Je kiest zelf je dagen, met een rustdag ertussen. Elke vierde week is lichter zodat je lijf kan bijkomen. Bij sommige runs staan snelle stukjes: die zijn optioneel, de hele run rustig lopen telt ook. Elke run heeft een ⏱ timer die piept als je moet wisselen. Op vakantie of een drukke week? Kies bij die week bij "Mijn week" voor Light (1 à 2 keer bewegen) of Rustig (2 runs). Punten: korte run 1, lange run 2, challenge 3.</p>
+    <div class="weeks" id="weeks"></div>
+  </section>
+
+  <section aria-labelledby="tTitle">
+    <h2 id="tTitle">De <em>spelregels</em></h2>
+    <div class="tips">
+      <div class="card"><b>Kletstempo</b>Je moet kunnen praten tijdens het lopen. Lukt dat niet, ga langzamer.</div>
+      <div class="card"><b>Run gemist?</b>Gewoon door met de volgende. Niet inhalen met twee runs achter elkaar.</div>
+      <div class="card"><b>Drukke week</b>Doe in elk geval de lange run. Twee runs is prima, nul liever niet.</div>
+      <div class="card"><b>Pijn of spierpijn?</b>Scherpe of terugkerende pijn: een paar dagen rust en bij twijfel naar een fysio.</div>
+      <div class="card"><b>Goede schoenen</b>Laat je adviseren in een hardloopwinkel. De beste investering van dit plan.</div>
+      <div class="card"><b>De prijs</b>Wie op 15 mei de meeste punten heeft, kiest waar we na de finish gaan eten.</div>
+    </div>
+  </section>
+  <p class="status" id="status"></p>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.50.0/dist/umd/supabase.js"></script>
+<script src="config.js"></script>
+<script>
+(function(){
+const START=new Date(2026,10,9), RACE=new Date(2027,4,15), DAY=86400000;
+const CREW=[{id:"sheray",name:"Sheray"},{id:"dyea",name:"Dyea"},{id:"mercedez",name:"Mercedez"}];
+
+const W=[
+ ["Basis","8× 1 min rennen, 90 sec wandelen","8× 1 min rennen, 90 sec wandelen","10× 1 min rennen, 1 min wandelen"],
+ ["Basis","6× 2 min rennen, 1 min wandelen","6× 2 min rennen, 1 min wandelen","8× 2 min rennen, 1 min wandelen"],
+ ["Basis","5× 3 min rennen, 1 min wandelen","5× 3 min rennen, 1 min wandelen","6× 3 min rennen, 1 min wandelen"],
+ ["Basis","6× 2 min rennen, 1 min wandelen","5× 3 min rennen, 1 min wandelen","5× 3 min rennen, 1 min wandelen",1],
+ ["Basis","4× 5 min rennen, 1 min wandelen","4× 5 min rennen, 1 min wandelen","3× 7 min rennen, 1 min wandelen"],
+ ["Basis","3× 8 min rennen, 1 min wandelen","3× 8 min rennen, 1 min wandelen","2× 12 min rennen, 1 min wandelen"],
+ ["Basis","20 min rustig rennen","15 min rennen of een flinke wandeling","2× 12 min rennen, 1 min wandelen",1],
+ ["Basis","20 min rustig","20 min rustig","2× 15 min rennen, 1 min wandelen"],
+ ["Basis","20 min rustig","25 min rustig","25 min aan één stuk"],
+ ["Opbouw","25 min rustig","25 min rustig","30 min (± 4 km)"],
+ ["Opbouw","25 min rustig","30 min rustig","5 km"],
+ ["Opbouw","30 min rustig","30 min rustig","5 km"],
+ ["Opbouw","25 min rustig","25 min rustig","4 km",1],
+ ["Opbouw","30 min rustig","30 min, met 4× 1 min sneller (optioneel)","6 km"],
+ ["Opbouw","30 min rustig","30 min rustig","6 km"],
+ ["Opbouw","30 min rustig","30 min, met 5× 1 min sneller (optioneel)","7 km"],
+ ["Opbouw","30 min rustig","25 min rustig","5 km testloop, zo snel als comfortabel kan",1],
+ ["Afstand","30 min rustig","35 min rustig","7 km"],
+ ["Afstand","35 min rustig","35 min, met 3× 3 min sneller (optioneel)","8 km"],
+ ["Afstand","35 min rustig","35 min rustig","8 km"],
+ ["Afstand","30 min rustig","30 min rustig","6 km",1],
+ ["Afstand","35 min rustig","40 min, met 4× 3 min sneller (optioneel)","9 km"],
+ ["Afstand","35 min rustig","35 min rustig","10 km, voor het eerst de hele afstand"],
+ ["Afstand","40 min rustig","35 min, met 5× 2 min op racetempo (optioneel)","11 km, je langste run"],
+ ["Taper","35 min rustig","35 min rustig","8 km",1],
+ ["Taper","30 min rustig","30 min, met 4× 1 min op racetempo (optioneel)","6 km"],
+ ["Raceweek","Ma of di: 20 min rustig + 4 korte versnellingen","Wo of do: 15 min heel rustig, daarna rust tot de race","Za 15 mei: de 10 km"]
+];
+const CH=[
+ "Schrijf op waarom jij meedoet en deel het in de groepsapp 💭",
+ "Drink deze week elke dag 2 liter water 💧",
+ "Deel je hardloopstatistieken van november 📊",
+ "Lees deze week elke dag 20 minuten uit een boek 📖",
+ "Leg je telefoon deze week elke avond om 22:00 weg 📵",
+ "Maak een nieuw gezond recept en deel een foto 🥗",
+ "Kerstrun in iets feestelijks: muts, trui of lichtjes 🎄",
+ "Deel je statistieken van december en schrijf 3 doelen voor 2027 op 📊",
+ "Een week geen frisdrank of zoete drankjes 🚫🥤",
+ "Ga elke dag 10 minuten naar buiten zonder telefoon 🌿",
+ "Welkom terug Dyea! Loop deze week een run samen 💜",
+ "Deel je statistieken van januari 📊",
+ "Schrijf elke avond 3 dingen op waar je dankbaar voor bent 🙏🏽",
+ "Valentijn: stuur de andere twee een lieve voicememo 💌",
+ "Slaapweek: elke nacht minimaal 7 uur slaap 😴",
+ "Deel je statistieken van februari 📊",
+ "Deel je 5 km testtijd in de groepsapp. Die verbeteren we later ⏱️",
+ "Vrouwendag: loop samen een rondje en ga daarna koffie drinken ☕",
+ "Maak een loop-playlist en deel je drie favoriete nummers 🎧",
+ "Een week geen social media in bed 📵",
+ "Deel je statistieken van maart 📊",
+ "Kies samen jullie matching race-outfits 👟",
+ "Eerste 10 km gehaald? Vier het met een brunch samen 🥂",
+ "Generale repetitie: lange run in je race-outfit, met je race-ontbijt",
+ "Deel je statistieken van april en je finishtijd-doel 📊",
+ "Schrijf jezelf een briefje voor raceday en lees het voor de start 💗",
+ "Finishfoto met z'n drieën 📸"
+];
+const PTS={};W.forEach((w,i)=>{const n=i+1;PTS["w"+n+"a"]=1;PTS["w"+n+"b"]=1;PTS["w"+n+"c"]=2;PTS["c"+n]=3});
+
+const today=new Date();today.setHours(0,0,0,0);
+const cur=Math.floor((today-START)/DAY/7)+1;
+const NW=W.length;
+const shown=Math.min(NW,Math.max(1,cur));
+const $=id=>document.getElementById(id);
+function el(t,c,x){const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+function fmt(d){return d.toLocaleDateString("nl-NL",{day:"numeric",month:"short"})}
+const cvar=id=>"var(--"+id+")";
+const ivar=id=>"var(--"+id+"-ink)";
+
+let me=null;try{me=localStorage.getItem("hm-me")}catch(e){}
+if(!CREW.some(c=>c.id===me))me=null;
+const done={};CREW.forEach(c=>done[c.id]={});
+
+// Eigen planning per persoon. "light" = vakantie (1 à 2 keer bewegen), "rustig" = 2 runs, {src:n} = inhaalweek met de runs van week n
+const PLAN={
+  sheray:{1:"light",2:"light"},
+  dyea:{5:"light",6:"light",7:"light",8:"light",9:"light",10:"light",11:{src:8},12:{src:9},13:{src:10},14:{src:11}},
+  mercedez:{7:"rustig"}
+};
+const MODE_INFO={
+  normal:{label:"Normaal",icon:"",note:""},
+  light:{label:"Vakantie light",icon:"🌴",note:"Vakantie! 1 à 2 keer bewegen is genoeg. Rennen, gym of een flinke wandeling telt allemaal."},
+  rustig:{label:"Rustige week",icon:"✨",note:"Rustige week: 2 runs, lekker op je gemak."},
+  inhaal:{label:"Inhaalweek",icon:"🔁",note:""}
+};
+function planOf(id,n){const p=PLAN[id]&&PLAN[id][n];return p?(typeof p==="string"?p:"inhaal"):"normal"}
+function modeOf(id,n){const d=done[id];if(d["l"+n])return"light";if(d["r"+n])return"rustig";if(d["n"+n])return"normal";return planOf(id,n)}
+function srcOf(id,n){const p=PLAN[id]&&PLAN[id][n];return(p&&typeof p==="object")?p.src:n}
+function sessionsFor(id,n){
+  const m=modeOf(id,n),w=W[n-1],last=n===NW;
+  if(m==="light")return[{id:"w"+n+"a",kind:"Bewegen",text:last?w[1]:"Run: "+w[1]},{id:"w"+n+"b",kind:"Extra",text:"Gym, workout of nog een run (mag ook overslaan)"}];
+  if(m==="rustig")return[{id:"w"+n+"a",kind:"Run 1",text:w[1]},{id:"w"+n+"c",kind:last?"Race":"Lange run",text:w[3]}];
+  const x=m==="inhaal"?W[srcOf(id,n)-1]:w;
+  return[{id:"w"+n+"a",kind:"Run 1",text:x[1]},{id:"w"+n+"b",kind:"Run 2",text:x[2]},{id:"w"+n+"c",kind:last?"Race":"Lange run",text:x[3]}];
+}
+function weekCount(id,n){return sessionsFor(id,n).filter(x=>done[id][x.id]).length}
+function weekTotal(id,n){return sessionsFor(id,n).length}
+function weekDone(id,n){const c=weekCount(id,n);return modeOf(id,n)==="light"?c>=1:c===weekTotal(id,n)}
+function score(id){let p=0;for(let n=1;n<=NW;n++){sessionsFor(id,n).forEach(x=>{if(done[id][x.id])p+=PTS[x.id]});if(done[id]["c"+n])p+=PTS["c"+n]}return p}
+function progress(id){let d=0,t=0;for(let n=1;n<=NW;n++){d+=weekCount(id,n);t+=weekTotal(id,n)}return t?Math.round(d/t*100):0}
+function streak(id){let s=0;for(let n=Math.min(cur,NW)-1;n>=1;n--){if(weekDone(id,n))s++;else break}if(cur>=1&&cur<=NW&&weekDone(id,cur))s++;return s}
+
+function hearts(btn,color){
+  if(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+  const r=btn.getBoundingClientRect();
+  for(let i=0;i<7;i++){const h=el("span","heart","♥");h.style.color=color;h.style.left=(r.left+r.width/2-6)+"px";h.style.top=(r.top-4)+"px";
+    const a=Math.PI*(1.1+Math.random()*.8);h.style.setProperty("--dx",Math.cos(a)*50+"px");h.style.setProperty("--dy",Math.sin(a)*60+"px");
+    document.body.append(h);setTimeout(()=>h.remove(),950)}
+}
+function pills(id,label,who){
+  const box=el("div","pills");
+  CREW.filter(c=>!who||who.includes(c.id)).forEach(c=>{const on=!!done[c.id][id];const mine=c.id===me;
+    const p=el(mine?"button":"span","pill"+(on?" on":"")+(mine?" mine":" other"));p.style.setProperty("--c",cvar(c.id));p.style.setProperty("--ci",ivar(c.id));
+    const d=el("span","d","✓");const n=el("span","n",c.name);p.append(d,n);
+    if(mine){p.type="button";p.setAttribute("aria-pressed",on);p.setAttribute("aria-label",(on?"Afgevinkt: ":"Afvinken: ")+label);
+      p.onclick=()=>{if(!on)hearts(p,getComputedStyle(document.documentElement).getPropertyValue("--"+c.id).trim()||"#e8508f");toggle(id,!on)}}
+    else{p.setAttribute("aria-label",c.name+(on?" heeft dit gedaan":" nog niet"));p.title=c.name}
+    box.append(p)});
+  return box;
+}
+
+function renderTop(){
+  $("tDays").textContent=Math.max(0,Math.round((RACE-today)/DAY));
+  $("tWeek").textContent=cur<1?"0":cur>NW?NW:cur;
+  $("tPhase").textContent=cur<1?"start ma 9 nov":"van "+NW+" · "+W[shown-1][0];
+  let r=0,tot=0;CREW.forEach(c=>{r+=weekCount(c.id,shown);tot+=weekTotal(c.id,shown)});
+  $("tRuns").textContent=r+"/"+tot;
+  $("tPts").textContent=CREW.reduce((a,c)=>a+score(c.id),0);
+  $("chLabel").textContent="Challenge week "+shown+(cur<1?" · vanaf 9 nov":"");
+  $("chTitle").textContent=CH[shown-1];
+  const old=$("chPills");const np=pills("c"+shown,CH[shown-1]);np.id="chPills";old.replaceWith(np);
+}
+function renderCrew(){
+  const box=$("crew");box.innerHTML="";
+  const scores=CREW.map(c=>score(c.id));const top=Math.max(...scores);
+  CREW.forEach((c,ix)=>{const p=scores[ix];
+    const pct=progress(c.id);
+    const b=el(me?"div":"button","mate card"+(me===c.id?" me":"")+(me?"":" pickable"));b.style.setProperty("--c",cvar(c.id));b.style.setProperty("--ci",ivar(c.id));if(!me){b.type="button";b.setAttribute("aria-label","Ik ben "+c.name);b.onclick=()=>setMe(c.id)}
+    const ring=el("div","ring");const r=31,C=2*Math.PI*r;
+    ring.innerHTML='<svg viewBox="0 0 76 76" aria-hidden="true"><circle cx="38" cy="38" r="'+r+'" fill="none" stroke="var(--line)" stroke-width="7"/><circle cx="38" cy="38" r="'+r+'" fill="none" stroke="'+cvar(c.id)+'" stroke-width="7" stroke-linecap="round" stroke-dasharray="'+C+'" stroke-dashoffset="'+(C*(1-pct/100))+'"/></svg>';
+    ring.append(el("b",null,pct+"%"));
+    if(top>0&&p===top){const cr=el("span","crown","👑");cr.title="Staat bovenaan";ring.append(cr)}
+    const mid=el("div");const n=el("div","mname",c.name);if(me===c.id)n.append(el("small",null,"jij"));
+    const st=streak(c.id);
+    mid.append(n,el("div","mpts",p+" punten"+(st>1?" · "+st+" weken op rij compleet":"")));
+    const wm=modeOf(c.id,shown);
+    const wb=el("div","wbar");sessionsFor(c.id,shown).forEach(x=>wb.append(el("i",done[c.id][x.id]?"on":"")));wb.append(el("i",done[c.id]["c"+shown]?"on":""));wb.title="Deze week: runs en de challenge";
+    if(wm!=="normal"){const mi=MODE_INFO[wm];mid.append(el("div","mmode",mi.icon+" "+(wm==="inhaal"?"Inhaalweek":mi.label)+" deze week"))}
+    mid.append(wb);b.append(ring,mid);
+    box.append(b)});
+  const h=$("meHint");h.innerHTML="";
+  if(me){h.append(document.createTextNode("Je bent "+CREW.find(c=>c.id===me).name+". "));const sw=el("button","swap","Niet jij?");sw.type="button";sw.onclick=()=>setMe(null);h.append(sw)}
+  else h.textContent="Tik op je eigen naam";
+  const pk=$("pick");pk.hidden=!!me;const row=$("pickRow");row.innerHTML="";
+  CREW.forEach(c=>{const bt=el("button",null,c.name);bt.type="button";bt.style.setProperty("--c",cvar(c.id));bt.style.setProperty("--ci",ivar(c.id));bt.onclick=()=>setMe(c.id);row.append(bt)});
+}
+const openState={};
+function srow(id,kind,text,isCh,who){const s=el("div","s"+(isCh?" ch":""));const m=el("div");m.append(el("div","t",text));
+  const plan=isCh?null:parsePlan(text);
+  const row=el("div","prow");row.append(pills(id,text,who));
+  if(plan){const tb=el("button","tbtn","⏱ Timer");tb.type="button";tb.setAttribute("aria-label","Start timer voor: "+text);tb.onclick=()=>openTimer(plan,text,id);row.append(tb)}
+  m.append(row);s.append(el("div","k",kind),m);return s}
+// ---------- timer ----------
+function parsePlan(text){
+  let t=text.replace(/^Run: /,"").replace(/^(Ma of di|Wo of do|Za 15 mei): /,"");
+  if(/gym|workout/i.test(t))return null;
+  const warm={type:"walk",label:"Warming-up · stevig wandelen",sec:300},cool={type:"walk",label:"Cooling-down · uitwandelen",sec:300};
+  const run=(sec,label)=>({type:"run",label:label||"Rennen",sec}),walk=(sec)=>({type:"walk",label:"Wandelen",sec}),fast=(sec,label)=>({type:"fast",label:label||"Sneller",sec});
+  const u=(n,unit)=>+n*(unit==="sec"?1:60);
+  let m,segs;
+  if(m=t.match(/^(\d+)× (\d+) (min|sec) rennen, (\d+) (min|sec) wandelen/)){
+    const n=+m[1],r=u(m[2],m[3]),w=u(m[4],m[5]);segs=[warm];
+    for(let i=0;i<n;i++){segs.push(Object.assign(run(r),{round:i+1,rounds:n}));if(i<n-1)segs.push(walk(w))}
+    segs.push(cool);return{mode:"timer",segs}}
+  if(m=t.match(/^(\d+) min, met (\d+)× (\d+) min (sneller|op racetempo)/)){
+    const tot=+m[1]*60,k=+m[2],f=+m[3]*60,rec=Math.max(f,120),lbl=m[4]==="sneller"?"Sneller 🔥":"Racetempo 🔥";
+    segs=[warm,run(600,"Rustig rennen")];let used=600;
+    for(let i=0;i<k;i++){segs.push(Object.assign(fast(f,lbl),{round:i+1,rounds:k}));used+=f;if(i<k-1){segs.push(run(rec,"Rustig rennen"));used+=rec}}
+    if(tot-used>0)segs.push(run(tot-used,"Rustig uitlopen"));segs.push(cool);return{mode:"timer",segs}}
+  if(m=t.match(/^(\d+) min rustig \+ (\d+) korte versnellingen/)){
+    const k=+m[2];segs=[warm,run(+m[1]*60,"Rustig rennen")];
+    for(let i=0;i<k;i++){segs.push(Object.assign(fast(20,"Versnelling 🔥"),{round:i+1,rounds:k}));segs.push(run(40,"Rustig"))}
+    segs.push(cool);return{mode:"timer",segs}}
+  if(m=t.match(/^(\d+) min/)){segs=[warm,run(+m[1]*60,"Rustig rennen"),cool];return{mode:"timer",segs}}
+  if(m=t.match(/(\d+) km/))return{mode:"stopwatch",km:+m[1]};
+  return null}
+const T={};
+function mmss(sec){sec=Math.max(0,Math.ceil(sec));const h=Math.floor(sec/3600),m=Math.floor(sec%3600/60),s=sec%60;return(h?h+":"+String(m).padStart(2,"0"):m)+":"+String(s).padStart(2,"0")}
+function beep(f,d,when){try{if(!T.ac)return;const o=T.ac.createOscillator(),g=T.ac.createGain();o.frequency.value=f;o.connect(g);g.connect(T.ac.destination);const t0=T.ac.currentTime+(when||0);g.gain.setValueAtTime(.0001,t0);g.gain.exponentialRampToValueAtTime(.4,t0+.02);g.gain.exponentialRampToValueAtTime(.0001,t0+d);o.start(t0);o.stop(t0+d+.05)}catch(e){}}
+let VOICE=true;try{VOICE=localStorage.getItem("hm-voice")!=="0"}catch(e){}
+function speak(txt){if(!VOICE)return;try{const ss=window.speechSynthesis;if(!ss)return;ss.cancel();const u=new SpeechSynthesisUtterance(txt);u.lang="nl-NL";u.rate=1.05;u.volume=1;
+  const v=(ss.getVoices()||[]).find(v=>/^nl/i.test(v.lang));if(v)u.voice=v;ss.speak(u)}catch(e){}}
+function sayFor(sg){const l=sg.label.replace(/[^\p{L}\p{N} ·]/gu,"").split("·").pop().trim();return l+(sg.sec>=60?", "+Math.round(sg.sec/60)+" minuten":", "+sg.sec+" seconden")}
+function cue(type,sg){if(type==="walk"){beep(660,.25);beep(520,.35,.3)}else if(type==="fast"){beep(880,.15);beep(880,.15,.2);beep(1100,.3,.4)}else{beep(700,.2);beep(940,.35,.25)}
+  if(sg)setTimeout(()=>speak(sayFor(sg)),700);try{navigator.vibrate&&navigator.vibrate([250,120,250])}catch(e){}}
+function audioUnlock(){try{if(navigator.audioSession)navigator.audioSession.type="transient"}catch(e){}
+  try{const AC=window.AudioContext||window.webkitAudioContext;if(AC){T.ac=T.ac||new AC();T.ac.resume&&T.ac.resume();const b=T.ac.createBuffer(1,1,22050),src=T.ac.createBufferSource();src.buffer=b;src.connect(T.ac.destination);src.start(0)}}catch(e){}
+  try{if(window.speechSynthesis&&!T.spoke){const u=new SpeechSynthesisUtterance(" ");u.volume=0;speechSynthesis.speak(u);T.spoke=true}}catch(e){}}
+async function wake(){try{if(navigator.wakeLock&&!T.lock)T.lock=await navigator.wakeLock.request("screen")}catch(e){}}
+function unwake(){try{T.lock&&T.lock.release()}catch(e){}T.lock=null}
+document.addEventListener("visibilitychange",()=>{if(T.ov&&document.visibilityState==="visible"){T.lock=null;if(T.running)wake();try{T.ac&&T.ac.resume&&T.ac.resume()}catch(e){}}});
+function openTimer(plan,text,id){
+  closeTimer();
+  audioUnlock();
+  Object.assign(T,{plan,text,id,idx:0,running:false,left:plan.mode==="timer"?plan.segs[0].sec:0,elapsed:0,endAt:0,startAt:0,done:false});
+  const ov=el("div","tov");ov.setAttribute("role","dialog");ov.setAttribute("aria-modal","true");ov.setAttribute("aria-label","Timer");
+  ov.innerHTML='<div class="tin"><div class="ttop"><span class="tttl"></span><button type="button" class="tx" aria-label="Timer sluiten">✕</button></div><div class="tsnd"><button type="button" class="tsb ttest">🔊 Test geluid</button><button type="button" class="tsb tvoice"></button></div>'+
+    '<div class="tmain"><div class="tphase" aria-live="assertive"></div><div class="tround"></div><div class="tclock"></div><div class="tnext"></div></div>'+
+    '<div class="tbar"><i></i></div><div class="ttotal"></div>'+
+    '<div class="tctl"><button type="button" class="tb tskip">⏭ Volgende</button><button type="button" class="tb tmainbtn">▶ Start</button></div>'+
+    '<p class="thint">Houd je scherm aan voor de piepjes en de stem. Op slot gaat de tijd gewoon door, maar hoor je niks.</p></div>';
+  document.body.append(ov);T.ov=ov;document.documentElement.style.overflow="hidden";
+  ov.querySelector(".tttl").textContent=text;
+  ov.querySelector(".tx").onclick=closeTimer;
+  const vb=ov.querySelector(".tvoice");const setV=()=>{vb.textContent=VOICE?"🗣️ Stem aan":"🔇 Stem uit";vb.setAttribute("aria-pressed",VOICE)};setV();
+  vb.onclick=()=>{VOICE=!VOICE;try{localStorage.setItem("hm-voice",VOICE?"1":"0")}catch(e){};setV();if(VOICE)speak("Stem staat aan")};
+  ov.querySelector(".ttest").onclick=()=>{audioUnlock();beep(700,.2);beep(940,.35,.25);setTimeout(()=>speak("Hoi! Zo klinkt je timer. Rennen, 1 minuut."),600)};
+  ov.querySelector(".tskip").onclick=()=>{if(T.done)return;if(plan.mode==="stopwatch"){finish();return}advance(true)};
+  ov.querySelector(".tmainbtn").onclick=()=>{if(T.done){if(T.canTick){toggle(T.id,true);toast("Afgevinkt! Goed bezig 💪🏽")}closeTimer();return}T.running?pause():start()};
+  if(plan.mode==="stopwatch")ov.querySelector(".tskip").textContent="🏁 Klaar";
+  T.iv=setInterval(tick,250);paint();ov.querySelector(".tmainbtn").focus();
+}
+function closeTimer(){if(T.iv)clearInterval(T.iv);T.iv=null;unwake();if(T.ov){T.ov.remove();T.ov=null;document.documentElement.style.overflow=""}T.running=false}
+function start(){T.running=true;const now=Date.now();if(T.plan.mode==="timer"){T.endAt=now+T.left*1000;if(T.idx===0&&T.left===T.plan.segs[0].sec)cue(T.plan.segs[0].type,T.plan.segs[0])}else{if(!T.elapsed)speak("Start. Rustig rennen, in kletstempo.");T.startAt=now-T.elapsed*1000}wake();paint()}
+function pause(){T.running=false;if(T.plan.mode==="timer")T.left=(T.endAt-Date.now())/1000;else T.elapsed=(Date.now()-T.startAt)/1000;unwake();paint()}
+function advance(manual){const segs=T.plan.segs;T.idx++;if(T.idx>=segs.length){finish();return}T.left=segs[T.idx].sec;T.endAt=(manual?Date.now():T.endAt)+T.left*1000;if(!manual||T.running)cue(segs[T.idx].type,segs[T.idx]);if(!T.running)T.endAt=Date.now()+T.left*1000;paint()}
+function finish(){if(T.plan.mode==="stopwatch"&&T.running)T.elapsed=(Date.now()-T.startAt)/1000;T.running=false;T.done=true;unwake();beep(523,.2);beep(659,.2,.2);beep(784,.2,.4);beep(1046,.5,.6);setTimeout(()=>speak("Klaar! Goed gedaan."),900);paint()}
+function tick(){if(!T.ov||!T.running)return;
+  if(T.plan.mode==="timer"){let guard=0;while(T.running&&Date.now()>=T.endAt&&guard++<200){const segs=T.plan.segs;T.idx++;if(T.idx>=segs.length){finish();return}T.left=segs[T.idx].sec;T.endAt+=T.left*1000;if(Date.now()<T.endAt)cue(segs[T.idx].type,segs[T.idx])}
+    const rem=(T.endAt-Date.now())/1000;const r=Math.ceil(rem);if(r<=3&&r>=1&&T.lastBeep!==r+"-"+T.idx){T.lastBeep=r+"-"+T.idx;beep(440,.08)}}
+  paint()}
+function paint(){const ov=T.ov;if(!ov)return;const q=c=>ov.querySelector(c);
+  const meCan=!!(me&&T.id&&!(done[me]||{})[T.id]&&(sessionsFor(me,+T.id.slice(1,-1)).some(x=>x.id===T.id)));T.canTick=meCan;
+  if(T.done){ov.dataset.type="done";q(".tphase").textContent="Klaar! 🎉";q(".tround").textContent="";
+    q(".tclock").textContent=T.plan.mode==="stopwatch"?mmss(T.elapsed):"Top gedaan";q(".tnext").textContent=T.plan.mode==="stopwatch"?"Deel je tijd in de groepsapp":"Vergeet niet even te stretchen";
+    q(".tbar i").style.width="100%";q(".ttotal").textContent="";q(".tskip").hidden=true;q(".tmainbtn").textContent=meCan?"✓ Afvinken":"Sluiten";return}
+  q(".tskip").hidden=false;
+  if(T.plan.mode==="stopwatch"){ov.dataset.type="run";const e=T.running?(Date.now()-T.startAt)/1000:T.elapsed;
+    q(".tphase").textContent="Rustig rennen";q(".tround").textContent="Doel: "+T.plan.km+" km in kletstempo";q(".tclock").textContent=mmss(e);
+    q(".tnext").textContent="Wandelen mag altijd even, gewoon doorgaan";q(".tbar i").style.width="0%";q(".ttotal").textContent="";
+    q(".tmainbtn").textContent=T.running?"⏸ Pauze":(e>0?"▶ Verder":"▶ Start");return}
+  const segs=T.plan.segs,sg=segs[T.idx];ov.dataset.type=sg.type;
+  const rem=T.running?(T.endAt-Date.now())/1000:T.left;
+  q(".tphase").textContent=sg.label;q(".tround").textContent=sg.rounds?"Ronde "+sg.round+" van "+sg.rounds:"";
+  q(".tclock").textContent=mmss(rem);
+  const nx=segs[T.idx+1];q(".tnext").textContent=nx?"Straks: "+nx.label+" · "+mmss(nx.sec):"Laatste stuk!";
+  const total=segs.reduce((a,x)=>a+x.sec,0),after=segs.slice(T.idx+1).reduce((a,x)=>a+x.sec,0),left=rem+after;
+  q(".tbar i").style.width=((1-left/total)*100).toFixed(1)+"%";q(".ttotal").textContent="Nog "+mmss(left)+" totaal";
+  q(".tmainbtn").textContent=T.running?"⏸ Pauze":(T.idx===0&&rem>=sg.sec?"▶ Start":"▶ Verder")}
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&T.ov)closeTimer()});
+function setMode(n,m){if(!me)return;const plan=planOf(me,n);
+  const want={n:false,l:false,r:false};
+  if(m!==plan){if(m==="normal")want.n=true;if(m==="light")want.l=true;if(m==="rustig")want.r=true}
+  ["n","l","r"].forEach(k=>{if(!!done[me][k+n]!==want[k])toggle(k+n,want[k])});
+  toast(m==="normal"?"Week "+n+": je volgt het normale schema":m==="inhaal"?"Week "+n+": inhaalweek":"Week "+n+": "+MODE_INFO[m].label.toLowerCase()+" "+MODE_INFO[m].icon)}
+function modeBar(n){
+  const bar=el("div","modebar");bar.append(el("span","label","Mijn week"));
+  const cur_=modeOf(me,n),opts=["normal","light","rustig"];if(planOf(me,n)==="inhaal")opts.splice(1,0,"inhaal");
+  opts.forEach(m=>{const b=el("button","mopt"+(cur_===m?" on":""),(MODE_INFO[m].icon?MODE_INFO[m].icon+" ":"")+(m==="normal"?"Normaal":m==="light"?"Light":m==="rustig"?"Rustig":"Inhaal"));
+    b.type="button";b.setAttribute("aria-pressed",cur_===m);b.onclick=()=>{if(cur_!==m)setMode(n,m)};bar.append(b)});
+  return bar}
+function renderWeeks(){
+  const box=$("weeks");box.querySelectorAll("details").forEach(d=>openState[d.dataset.w]=d.open);box.innerHTML="";
+  W.forEach((w,i)=>{const n=i+1,st=new Date(START.getTime()+i*7*DAY),en=new Date(st.getTime()+6*DAY);
+    const d=el("details","week"+(n===cur?" now":""));d.dataset.w=n;d.open=openState[n]!==undefined?openState[n]:n===shown;
+    const s=el("summary");const mid=el("div");
+    const t=el("div","wtitle");t.append(document.createTextNode(w[0]+" "));if(n===cur)t.append(el("em",null,"deze week"));else if(w[4])t.append(el("em",null,"lichter"));
+    const special=CREW.filter(c=>modeOf(c.id,n)!=="normal");
+    const sub=fmt(st)+" – "+fmt(en)+" · lang: "+w[3].split(",")[0]+special.map(c=>" · "+MODE_INFO[modeOf(c.id,n)].icon+" "+c.name).join("");
+    mid.append(t,el("div","wsub",sub));
+    const mini=el("div","mini");mini.title="Runs per persoon";
+    CREW.forEach(c=>{const i2=el("i");const b2=el("b");b2.style.height=(weekCount(c.id,n)/weekTotal(c.id,n)*100)+"%";b2.style.setProperty("--c",cvar(c.id));i2.append(b2);mini.append(i2)});
+    s.append(el("div","wk",n),mid,mini);d.append(s);
+    const ss=el("div","sessions");
+    if(me)ss.append(modeBar(n));
+    const normal=CREW.filter(c=>modeOf(c.id,n)==="normal").map(c=>c.id);
+    if(normal.length)ss.append(srow("w"+n+"a","Run 1",w[1],false,normal),srow("w"+n+"b","Run 2",w[2],false,normal),srow("w"+n+"c",n===NW?"Race":"Lange run",w[3],false,normal));
+    special.forEach(c=>{const m=modeOf(c.id,n),mi=MODE_INFO[m];
+      const box2=el("div","persona");box2.style.setProperty("--c",cvar(c.id));
+      const h=el("div","ph");h.append(el("b",null,mi.icon+" "+c.name),document.createTextNode(" · "+mi.label));box2.append(h);
+      box2.append(el("p","pnote",m==="inhaal"?"Je doet de runs van week "+srcOf(c.id,n)+". Zo pak je rustig de draad weer op en haak je daarna weer aan.":mi.note));
+      sessionsFor(c.id,n).forEach(x=>box2.append(srow(x.id,x.kind,x.text,false,[c.id])));
+      ss.append(box2)});
+    ss.append(srow("c"+n,"Challenge",CH[i],true));
+    d.append(ss);box.append(d)});
+}
+function toast(msg){let t=$("toast");if(!t){t=el("div","toast");t.id="toast";t.setAttribute("role","status");document.body.append(t)}t.textContent=msg;t.classList.add("show");clearTimeout(toast._t);toast._t=setTimeout(()=>t.classList.remove("show"),2600)}
+function setMe(id){me=id;try{id?localStorage.setItem("hm-me",id):localStorage.removeItem("hm-me")}catch(e){};renderAll();if(id)toast("Hoi "+CREW.find(c=>c.id===id).name+"! Tik nu op je eigen pilletje om af te vinken.")}
+function renderAll(){renderTop();renderCrew();renderWeeks()}
+
+// ---- opslag (Supabase) ----
+const CFG=window.OP_NAAR_10KM||{};
+const BASE=(CFG.supabaseUrl||"").replace(/\/rest\/v1\/?$/,"").replace(/\/$/,"");
+const KEY=CFG.supabaseKey||"";
+const configured=BASE&&KEY&&!/JOUW/.test(BASE+KEY);
+const HDR={"apikey":KEY,"Content-Type":"application/json"};
+function applyRow(r){if(r&&done[r.runner]){done[r.runner][r.item]=!!r.done}}
+const noDb="Nog niet gekoppeld aan de database: vinkjes worden niet opgeslagen.";
+async function toggle(id,val){
+  if(!me)return;
+  done[me][id]=val;renderAll();
+  if(!configured){$("status").textContent=noDb;return}
+  try{
+    const r=await fetch(BASE+"/rest/v1/checks?on_conflict=runner,item",{method:"POST",headers:Object.assign({"Prefer":"resolution=merge-duplicates,return=minimal"},HDR),
+      body:JSON.stringify({runner:me,item:id,done:val,updated_at:new Date().toISOString()})});
+    if(!r.ok)throw new Error(r.status);
+    if($("status").textContent.startsWith("Opslaan"))$("status").textContent="";
+  }catch(e){$("status").textContent="Opslaan lukte niet. Check je internet en probeer opnieuw.";done[me][id]=!val;renderAll()}
+}
+let loading=false;
+async function load(){
+  if(!configured){$("status").textContent=noDb;return}
+  if(loading)return;loading=true;
+  try{
+    const r=await fetch(BASE+"/rest/v1/checks?select=runner,item,done",{headers:HDR});
+    if(!r.ok)throw new Error(r.status);
+    const data=await r.json();
+    CREW.forEach(c=>done[c.id]={});data.forEach(applyRow);renderAll();
+    if(!$("status").textContent.startsWith("Opslaan"))$("status").textContent="";
+  }catch(e){$("status").textContent="De groepsstand kon niet laden. Check je internet."}
+  loading=false;
+}
+renderAll();
+load();
+if(configured){
+  try{if(window.supabase){const sb=window.supabase.createClient(BASE,KEY);
+    sb.channel("checks-live").on("postgres_changes",{event:"*",schema:"public",table:"checks"},p=>{applyRow(p.new);renderAll()}).subscribe()}}catch(e){}
+  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")load()});
+  setInterval(()=>{if(document.visibilityState==="visible")load()},30000);
+}
+})();
+</script>
+</body>
+</html>
